@@ -1,0 +1,65 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Автори та їхні книги</h2>
+
+  <table class="table table-hover border">
+    <thead class="table-dark">
+      <tr>
+        <th>Прізвище</th>
+        <th>Ім'я (натисніть для перегляду книг)</th>
+        <th>Дата народження</th>
+        <th>Кількість книг</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (author of bookService.authors(); track author.id) {
+        <tr>
+          <td>{{ author.lastName }}</td>
+          <td>
+            <button class="btn btn-link p-0 text-decoration-none fw-bold" (click)="toggleBooks(author.id)">
+              {{ author.firstName }}
+            </button>
+          </td>
+          <td>{{ author.birthDate | date:'dd.MM.yyyy' }}</td>
+          <td><span class="badge bg-secondary">{{ author.books.length }}</span></td>
+        </tr>
+
+        @if (selectedAuthorId() === author.id) {
+          <tr>
+            <td colspan="4" class="bg-light p-3">
+              <div class="card shadow-sm">
+                <div class="card-header bg-info text-white py-1">Список книг: {{ author.firstName }} {{ author.lastName }}</div>
+                <table class="table table-sm mb-0">
+                  <thead>
+                    <tr>
+                      <th>Назва</th>
+                      <th>Рік видання</th>
+                      <th>Сторінок</th>
+                      <th>Жанр</th>
+                      <th>Дії</th>
+
+<td>
+  <button class="btn btn-outline-danger btn-sm" (click)="onDelete(author.id)">
+    <i class="bi bi-trash"></i> Видалити
+  </button>
+</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (book of author.books; track book.id) {
+                      <tr>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.year }}</td>
+                        <td>{{ book.pages }}</td>
+                        <td>{{ book.genre }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>
