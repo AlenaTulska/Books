@@ -1,59 +1,24 @@
-# Books
+Додаток для перегляду та управління книгами Cozy Library,побудований на Angular 19.
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.6.
+Основні можливості
+- Керування авторами та книгами: додавання, видалення та перегляд в ієрархічному вигляді (Master-Detail).
+- Динамічне сортування: сортування списку авторів за прізвищем, ім'ям або кількістю написаних книг.
+- Управління жанрами: окремий сервіс для ведення довідника жанрів.
+- Валідація форм: розумні форми з перевіркою дат та обов'язкових полів.
+- Persistence:автоматичне збереження всіх змін у `LocalStorage`.
 
-## Development server
+Технологічний стек
+- Angular (Standalone Components).
+- Signals & Computed:реактивне управління станом.
+- TypeScript Models:сувора типізація даних для запобігання помилкам.
+- Bootstrap 5:адаптивний та сучасний інтерфейс.
 
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Структура проєкту
+Проєкт організований за принципом розділення відповідальності (Separation of Concerns):
+- src/app/services/ — бізнес-логіка та робота з даними
+- src/app/models/ — описи структур даних (Interfaces).
+- src/app/authors/ — інтерактивний компонент для перегляду таблиці авторів та книг.
+- src/app/genres/ — інтерактивний компонент для перегляду та керування списком жанрів.
+- src/app/authors/authors-form/` — ізольований компонент для управління списком авторів.
+- src/app/authors/books-form/` — ізольований компонент для управління переліком книг.
+- src/app/data/authors.ts - клас, що містить інтерфейси авторів та книг

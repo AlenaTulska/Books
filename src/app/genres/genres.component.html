@@ -1,0 +1,25 @@
+<div class="container mt-4">
+      <div class="card shadow-sm mx-auto" style="max-width: 500px;">
+        <div class="card-header bg-dark text-white">
+          <h4 class="mb-0">Керування жанрами</h4>
+        </div>
+        <div class="card-body">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" [(ngModel)]="newGenreName" 
+                   placeholder="Назва нового жанру" (keyup.enter)="add()">
+            <button class="btn btn-primary" (click)="add()">Додати</button>
+          </div>
+
+          <ul class="list-group list-group-flush">
+            @for (genre of genreService.genres(); track genre) {
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ genre }}
+                <button class="btn btn-sm btn-outline-danger border-0" (click)="genreService.deleteGenre(genre)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>

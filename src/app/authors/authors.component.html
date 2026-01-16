@@ -1,65 +1,175 @@
 <div class="container mt-4">
-  <h2 class="mb-4">Автори та їхні книги</h2>
+  <h2 class="mb-4 text-primary">
+    <i class="bi bi-book"></i> Автори та їхні книги
+  </h2>
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="text-primary m-0"><i class="bi bi-people"></i> Автори</h2>
+      <button
+        class="btn btn-primary shadow-sm"
+        (click)="isAuthorFormVisible.set(!isAuthorFormVisible())"
+      >
+        <i class="bi bi-person-plus"></i>
+        {{ isAuthorFormVisible() ? "Закрити форму" : "Додати автора" }}
+      </button>
+    </div>
 
-  <table class="table table-hover border">
+    @if (isAuthorFormVisible()) {
+    <app-authors-form
+      (add)="onAuthorAdd($event)"
+      (cancel)="isAuthorFormVisible.set(false)"
+    >
+    </app-authors-form>
+    }
+    <div class="mb-3">
+      <div class="input-group shadow-sm">
+        <span class="input-group-text bg-white"
+          ><i class="bi bi-search"></i
+        ></span>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Пошук книги за назвою..."
+          [ngModel]="stateService.searchTerm()"
+          (ngModelChange)="stateService.searchTerm.set($event)"
+        />
+      </div>
+    </div>
+  </div>
+  <table class="table table-hover border shadow-sm">
     <thead class="table-dark">
       <tr>
-        <th>Прізвище</th>
-        <th>Ім'я (натисніть для перегляду книг)</th>
+        <th
+          (click)="stateService.toggleSort('lastName')"
+          style="cursor: pointer"
+        >
+          Прізвище @if(stateService.sortKey()){
+          {{ stateService.sortDirection() === "asc" ? "↑" : "↓" }} }
+        </th>
+        <th
+          (click)="stateService.toggleSort('firstName')"
+          style="cursor: pointer"
+        >
+          Ім'я @if(stateService.sortKey() === 'firstName'){
+          {{ stateService.sortDirection() === "asc" ? "↑" : "↓" }} }
+        </th>
         <th>Дата народження</th>
-        <th>Кількість книг</th>
+        <th
+          (click)="stateService.toggleSort('booksCount')"
+          style="cursor: pointer"
+        >
+          Книг @if(stateService.sortKey() === 'booksCount'){
+          {{ stateService.sortDirection() === "asc" ? "↑" : "↓" }} }
+        </th>
+        <th class="text-center">Дії</th>
       </tr>
     </thead>
     <tbody>
-      @for (author of bookService.authors(); track author.id) {
-        <tr>
-          <td>{{ author.lastName }}</td>
-          <td>
-            <button class="btn btn-link p-0 text-decoration-none fw-bold" (click)="toggleBooks(author.id)">
-              {{ author.firstName }}
-            </button>
-          </td>
-          <td>{{ author.birthDate | date:'dd.MM.yyyy' }}</td>
-          <td><span class="badge bg-secondary">{{ author.books.length }}</span></td>
-        </tr>
+      @for (author of stateService.filteredAuthors(); track author.id) {
+      <tr>
+        <td>{{ author.lastName }}</td>
 
-        @if (selectedAuthorId() === author.id) {
-          <tr>
-            <td colspan="4" class="bg-light p-3">
-              <div class="card shadow-sm">
-                <div class="card-header bg-info text-white py-1">Список книг: {{ author.firstName }} {{ author.lastName }}</div>
-                <table class="table table-sm mb-0">
+        <td>
+          <button
+            class="btn btn-link p-0 text-decoration-none fw-bold"
+            (click)="toggleBooks(author.id)"
+          >
+            {{ author.firstName }}
+          </button>
+        </td>
+
+        <td>{{ author.birthDate | date : "dd.MM.yyyy" }}</td>
+
+        <td>
+          <span class="badge bg-info text-dark">{{ author.books.length }}</span>
+          @if (stateService.searchTerm()) {
+          <small class="text-success ms-1 animate-pulse">знайдено</small>
+          }
+        </td>
+
+        <td class="text-center">
+          <button
+            class="btn btn-outline-danger btn-sm"
+            (click)="onDelete(author.id)"
+          >
+            <i class="bi bi-trash"></i> Видалити
+          </button>
+        </td>
+      </tr>
+
+      @if (selectedAuthorId() === author.id) {
+      <tr>
+        <td colspan="5" class="bg-light p-0">
+          <div [@expandCollapse] class="p-3">
+            <div class="card shadow-sm">
+              <div
+                class="card-header bg-secondary text-white py-1 d-flex justify-content-between align-items-center"
+              >
+                <span
+                  >Список книг: {{ author.firstName }}
+                  {{ author.lastName }}</span
+                >
+                <button
+                  class="btn btn-sm btn-success"
+                  (click)="authorIdForNewBook.set(author.id)"
+                >
+                  <i class="bi bi-plus-circle"></i> Додати книгу
+                </button>
+              </div>
+              <div class="card-body p-0">
+                <table class="table table-sm table-striped mb-0">
                   <thead>
                     <tr>
                       <th>Назва</th>
-                      <th>Рік видання</th>
+                      <th>Рік</th>
                       <th>Сторінок</th>
                       <th>Жанр</th>
-                      <th>Дії</th>
-
-<td>
-  <button class="btn btn-outline-danger btn-sm" (click)="onDelete(author.id)">
-    <i class="bi bi-trash"></i> Видалити
-  </button>
-</td>
+                      <th class="text-end">Дії</th>
                     </tr>
                   </thead>
                   <tbody>
                     @for (book of author.books; track book.id) {
-                      <tr>
-                        <td>{{ book.title }}</td>
-                        <td>{{ book.year }}</td>
-                        <td>{{ book.pages }}</td>
-                        <td>{{ book.genre }}</td>
-                      </tr>
+                    <tr>
+                      <td>{{ book.title }}</td>
+                      <td>{{ book.year }}</td>
+                      <td>{{ book.pages }}</td>
+                      <td>
+                        <span class="badge border text-dark">{{
+                          book.genre
+                        }}</span>
+                      </td>
+                      <td class="text-end">
+                        <button
+                          class="btn btn-sm text-danger"
+                          title="Видалити книгу"
+                          (click)="onDeleteBook(author.id, book.id!)"
+                        >
+                          <i class="bi bi-x-square"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                      <td colspan="5" class="text-center text-muted">
+                        У цього автора поки немає книг
+                      </td>
+                    </tr>
                     }
                   </tbody>
                 </table>
               </div>
-            </td>
-          </tr>
-        }
-      }
+            </div>
+
+            @if (authorIdForNewBook() === author.id) {
+            <app-book-form
+              (add)="onBookAdd(author.id, $event)"
+              (cancel)="authorIdForNewBook.set(null)"
+            />
+            }
+          </div>
+        </td>
+      </tr>
+      } }
     </tbody>
   </table>
 </div>
